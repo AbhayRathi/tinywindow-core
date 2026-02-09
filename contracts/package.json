@@ -1,0 +1,17 @@
+{
+  "name": "tinywindow-contracts",
+  "version": "0.1.0",
+  "description": "Smart contracts for TinyWindow trading proof verification",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.js"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.0"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1"
+  }
+}

@@ -1,0 +1,40 @@
+[package]
+name = "execution-engine"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+
+# Cryptography
+ed25519-dalek = "2.1"
+sha2 = "0.10"
+hex = { version = "0.4", features = ["serde"] }
+rand = "0.8"
+
+# Database
+sqlx = { version = "0.7", features = ["runtime-tokio-native-tls", "postgres", "chrono", "uuid"] }
+redis = { version = "0.24", features = ["tokio-comp", "connection-manager"] }
+
+# Exchange Integration
+reqwest = { version = "0.11", features = ["json"] }
+
+# Utilities
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.6", features = ["v4", "serde"] }
+
+[lib]
+name = "execution_engine"
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "execution-engine"
+path = "src/main.rs"
