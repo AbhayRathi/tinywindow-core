@@ -106,8 +106,8 @@ class TradingStrategy:
         """
         from .config import settings
         
-        # Check confidence threshold
-        if decision.confidence < 0.5:
+        # Check confidence threshold (configurable)
+        if decision.confidence < settings.min_confidence_threshold:
             return False
         
         # Check position size

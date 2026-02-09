@@ -1,4 +1,4 @@
-use execution_engine::{ExecutionEngine, SigningKey, Database, SignalManager};
+use execution_engine::{ExecutionEngine, SigningKey};
 use execution_engine::execution::{Order, OrderSide, OrderType};
 use tracing_subscriber;
 

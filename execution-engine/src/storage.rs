@@ -83,6 +83,10 @@ impl Database {
     }
 
     /// Store an order result
+    /// 
+    /// Note: This is a simplified implementation. In production, you would need to either:
+    /// 1. Add order details (symbol, side, type, quantity) to OrderResult, or
+    /// 2. Pass both the original Order and OrderResult to this function
     pub async fn store_order(&self, result: &OrderResult) -> Result<()> {
         let status_str = match result.status {
             OrderStatus::Pending => "pending",
@@ -91,6 +95,8 @@ impl Database {
             OrderStatus::Cancelled => "cancelled",
         };
 
+        // TODO: Currently using placeholder values for order details
+        // In production, pass the complete order information
         sqlx::query(
             r#"
             INSERT INTO orders (id, symbol, side, order_type, quantity, status, execution_price, executed_quantity, created_at, updated_at)
@@ -103,10 +109,10 @@ impl Database {
             "#
         )
         .bind(result.order_id)
-        .bind("") // symbol placeholder
-        .bind("") // side placeholder
-        .bind("") // order_type placeholder
-        .bind(0.0) // quantity placeholder
+        .bind("PLACEHOLDER") // symbol - should come from Order
+        .bind("PLACEHOLDER") // side - should come from Order
+        .bind("PLACEHOLDER") // order_type - should come from Order
+        .bind(0.0) // quantity - should come from Order
         .bind(status_str)
         .bind(result.execution_price)
         .bind(result.executed_quantity)

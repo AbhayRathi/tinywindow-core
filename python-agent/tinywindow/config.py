@@ -25,6 +25,7 @@ class Settings(BaseSettings):
     # Trading Parameters
     max_position_size: float = 10000.0  # USD
     risk_per_trade: float = 0.02  # 2% of portfolio
+    min_confidence_threshold: float = 0.5  # Minimum confidence to execute trade
     
     # Model Configuration
     claude_model: str = "claude-3-5-sonnet-20241022"
