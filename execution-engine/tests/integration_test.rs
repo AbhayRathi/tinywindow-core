@@ -1,6 +1,7 @@
 //! Integration tests for execution engine
 
-use execution_engine::{ExecutionEngine, Order, OrderSide, OrderType, SigningKey};
+use execution_engine::{ExecutionEngine, SigningKey};
+use execution_engine::execution::{Order, OrderSide, OrderType};
 
 #[tokio::test]
 async fn test_full_execution_flow() {
