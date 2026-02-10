@@ -274,3 +274,134 @@ MIT License - see LICENSE file for details.
 ## Disclaimer
 
 This software is for educational and research purposes. Cryptocurrency trading involves substantial risk of loss. Always perform your own due diligence before trading.
+## Testing
+
+### Running All Tests
+
+#### Python Tests
+```bash
+cd python-agent
+pip install -e ".[dev]"
+pytest --cov=tinywindow --cov-report=html
+```
+
+View coverage report: `open htmlcov/index.html`
+
+#### Rust Tests
+```bash
+cargo test --verbose
+
+# With coverage
+cargo install cargo-tarpaulin
+cargo tarpaulin --out Html
+```
+
+#### Solidity Tests
+```bash
+cd contracts
+npm install
+npx hardhat test
+
+# With coverage
+npx hardhat coverage
+```
+
+### Running Specific Tests
+
+#### Python
+```bash
+# Run specific test file
+pytest tests/test_strategy.py -v
+
+# Run specific test
+pytest tests/test_strategy.py::TestTradingStrategy::test_analyze_market -v
+
+# Run integration tests only
+pytest tests/test_integration.py -v
+
+# Run with markers
+pytest -m unit  # Unit tests only
+pytest -m integration  # Integration tests only
+```
+
+#### Rust
+```bash
+# Run specific test
+cargo test test_sign_and_verify
+
+# Run tests in specific module
+cargo test crypto::tests
+
+# Run integration tests
+cargo test --test integration_test
+```
+
+#### Solidity
+```bash
+# Run specific test file
+npx hardhat test test/ProofVerifier.test.js
+
+# Run with gas reporting
+REPORT_GAS=true npx hardhat test
+```
+
+### Continuous Integration
+
+All tests run automatically on push to GitHub via GitHub Actions:
+- `.github/workflows/test.yml` - Runs all test suites
+- `.github/workflows/lint.yml` - Runs linters for all languages
+
+View CI results: [GitHub Actions](https://github.com/AbhayRathi/tinywindow-core/actions)
+
+### Test Coverage Requirements
+
+- Python: 80%+ coverage required
+- Rust: 75%+ coverage target
+- Solidity: All contracts must have comprehensive tests
+
+### Writing Tests
+
+#### Python
+- Use `pytest` with async support (`pytest-asyncio`)
+- Mock external APIs (Claude, CCXT) - see `conftest.py` for fixtures
+- Follow AAA pattern: Arrange, Act, Assert
+
+#### Rust  
+- Use `#[test]` for sync tests, `#[tokio::test]` for async
+- Integration tests go in `tests/` directory
+- Unit tests go in same file as code in `mod tests` block
+
+#### Solidity
+- Use Hardhat with Chai assertions
+- Test all revert conditions
+- Verify event emissions
+- Check state changes
+
+## Linting
+
+### Python
+```bash
+cd python-agent
+ruff check tinywindow/
+black --check tinywindow/
+
+# Auto-fix
+ruff check --fix tinywindow/
+black tinywindow/
+```
+
+### Rust
+```bash
+cargo fmt --check
+cargo clippy -- -D warnings
+
+# Auto-fix
+cargo fmt
+```
+
+### Solidity
+```bash
+cd contracts
+npx solhint 'contracts/**/*.sol'
+```
+
