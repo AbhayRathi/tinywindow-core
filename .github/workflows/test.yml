@@ -76,6 +76,7 @@ jobs:
     env:
       DATABASE_URL: postgresql://test:test@localhost:5432/tinywindow_test
       REDIS_URL: redis://localhost:6379/0
+      ANTHROPIC_API_KEY: test-api-key
     
     steps:
       - uses: actions/checkout@v4
