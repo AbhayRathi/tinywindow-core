@@ -8,7 +8,7 @@ describe("DecisionRegistry", function () {
     [owner, agent1, agent2] = await ethers.getSigners();
     const DecisionRegistry = await ethers.getContractFactory("DecisionRegistry");
     decisionRegistry = await DecisionRegistry.deploy();
-    await proofVerifier.waitForDeployment();
+    await decisionRegistry.waitForDeployment();
   });
 
   describe("Deployment", function () {

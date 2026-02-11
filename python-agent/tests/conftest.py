@@ -1,9 +1,30 @@
 """Pytest configuration and fixtures for TinyWindow tests."""
 
+import os
 import pytest
 import asyncio
 from unittest.mock import Mock, AsyncMock
 from typing import Dict, Any
+
+
+@pytest.fixture
+def mock_database_url():
+    """Mock database URL for testing."""
+    return os.getenv("DATABASE_URL", "postgresql://test:test@localhost:5432/tinywindow_test")
+
+
+@pytest.fixture
+def mock_redis_url():
+    """Mock Redis URL for testing."""
+    return os.getenv("REDIS_URL", "redis://localhost:6379/0")
+
+
+@pytest.fixture(autouse=True)
+def use_test_environment(monkeypatch):
+    """Ensure all tests use test environment variables."""
+    monkeypatch.setenv("DATABASE_URL", "postgresql://test:test@localhost:5432/tinywindow_test")
+    monkeypatch.setenv("REDIS_URL", "redis://localhost:6379/0")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "test-api-key")
 
 
 @pytest.fixture
@@ -12,8 +33,8 @@ def mock_settings():
     from unittest.mock import Mock
     settings = Mock()
     settings.anthropic_api_key = "test-api-key"
-    settings.database_url = "postgresql://test:test@localhost/test"
-    settings.redis_url = "redis://localhost:6379"
+    settings.database_url = "postgresql://test:test@localhost:5432/tinywindow_test"
+    settings.redis_url = "redis://localhost:6379/0"
     settings.coinbase_api_key = "test-coinbase-key"
     settings.coinbase_api_secret = "test-coinbase-secret"
     settings.binance_api_key = "test-binance-key"
