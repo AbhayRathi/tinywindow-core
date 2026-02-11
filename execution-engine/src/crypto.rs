@@ -1,6 +1,8 @@
-use ed25519_dalek::{Signer, Verifier, SigningKey as Ed25519SigningKey, VerifyingKey, Signature as Ed25519Signature};
-use sha2::{Sha256, Digest};
-use serde::{Serialize, Deserialize};
+use ed25519_dalek::{
+    Signature as Ed25519Signature, Signer, SigningKey as Ed25519SigningKey, Verifier, VerifyingKey,
+};
+use serde::{Deserialize, Serialize};
+use sha2::{Digest, Sha256};
 
 use crate::{Error, Result};
 
@@ -25,7 +27,9 @@ impl SigningKey {
     /// Create from bytes
     pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
         let inner = Ed25519SigningKey::from_bytes(
-            bytes.try_into().map_err(|_| Error::Crypto("Invalid key length".to_string()))?
+            bytes
+                .try_into()
+                .map_err(|_| Error::Crypto("Invalid key length".to_string()))?,
         );
         Ok(Self { inner })
     }
@@ -40,9 +44,7 @@ impl SigningKey {
     /// Sign data
     pub fn sign(&self, data: &[u8]) -> Signature {
         let signature = self.inner.sign(data);
-        Signature {
-            inner: signature,
-        }
+        Signature { inner: signature }
     }
 
     /// Export as bytes
@@ -54,7 +56,10 @@ impl SigningKey {
 /// Wrapper around Ed25519 verification key
 #[derive(Clone, Serialize, Deserialize)]
 pub struct VerificationKey {
-    #[serde(serialize_with = "serialize_bytes", deserialize_with = "deserialize_bytes")]
+    #[serde(
+        serialize_with = "serialize_bytes",
+        deserialize_with = "deserialize_bytes"
+    )]
     inner: VerifyingKey,
 }
 
@@ -71,7 +76,9 @@ where
 {
     let s = String::deserialize(deserializer)?;
     let bytes = hex::decode(&s).map_err(serde::de::Error::custom)?;
-    let bytes: [u8; 32] = bytes.try_into().map_err(|_| serde::de::Error::custom("Invalid key length"))?;
+    let bytes: [u8; 32] = bytes
+        .try_into()
+        .map_err(|_| serde::de::Error::custom("Invalid key length"))?;
     VerifyingKey::from_bytes(&bytes).map_err(serde::de::Error::custom)
 }
 
@@ -91,8 +98,11 @@ impl VerificationKey {
     /// Import from bytes
     pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
         let inner = VerifyingKey::from_bytes(
-            bytes.try_into().map_err(|_| Error::Crypto("Invalid key length".to_string()))?
-        ).map_err(|e| Error::Crypto(format!("Invalid verification key: {}", e)))?;
+            bytes
+                .try_into()
+                .map_err(|_| Error::Crypto("Invalid key length".to_string()))?,
+        )
+        .map_err(|e| Error::Crypto(format!("Invalid verification key: {}", e)))?;
         Ok(Self { inner })
     }
 }
@@ -117,7 +127,9 @@ where
 {
     let s = String::deserialize(deserializer)?;
     let bytes = hex::decode(&s).map_err(serde::de::Error::custom)?;
-    let bytes: [u8; 64] = bytes.try_into().map_err(|_| serde::de::Error::custom("Invalid signature length"))?;
+    let bytes: [u8; 64] = bytes
+        .try_into()
+        .map_err(|_| serde::de::Error::custom("Invalid signature length"))?;
     Ok(Ed25519Signature::from_bytes(&bytes))
 }
 
@@ -130,7 +142,9 @@ impl Signature {
     /// Import from bytes
     pub fn from_bytes(bytes: &[u8]) -> Result<Self> {
         let inner = Ed25519Signature::from_bytes(
-            bytes.try_into().map_err(|_| Error::Crypto("Invalid signature length".to_string()))?
+            bytes
+                .try_into()
+                .map_err(|_| Error::Crypto("Invalid signature length".to_string()))?,
         );
         Ok(Self { inner })
     }
@@ -151,10 +165,10 @@ mod tests {
     fn test_sign_and_verify() {
         let key = SigningKey::generate();
         let data = b"test message";
-        
+
         let signature = key.sign(data);
         let verification_key = key.verification_key();
-        
+
         assert!(verification_key.verify(data, &signature).is_ok());
     }
 
@@ -163,10 +177,10 @@ mod tests {
         let key = SigningKey::generate();
         let data = b"test message";
         let wrong_data = b"wrong message";
-        
+
         let signature = key.sign(data);
         let verification_key = key.verification_key();
-        
+
         assert!(verification_key.verify(wrong_data, &signature).is_err());
     }
 
@@ -175,7 +189,7 @@ mod tests {
         let data = b"test data";
         let hash1 = hash_data(data);
         let hash2 = hash_data(data);
-        
+
         assert_eq!(hash1, hash2);
     }
 }

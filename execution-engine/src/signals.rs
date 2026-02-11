@@ -1,5 +1,5 @@
-use redis::{Client, aio::ConnectionManager, AsyncCommands};
-use serde::{Serialize, Deserialize};
+use redis::{aio::ConnectionManager, AsyncCommands, Client};
+use serde::{Deserialize, Serialize};
 
 use crate::Result;
 
@@ -31,7 +31,9 @@ impl SignalManager {
         let value = serde_json::to_string(signal)?;
 
         self.client.set_ex::<_, _, ()>(&key, value, 300).await?; // Expire after 5 minutes
-        self.client.publish::<_, _, ()>("trading_signals", &key).await?;
+        self.client
+            .publish::<_, _, ()>("trading_signals", &key)
+            .await?;
 
         Ok(())
     }
@@ -54,7 +56,8 @@ impl SignalManager {
     pub async fn subscribe(&self) -> Result<redis::aio::PubSub> {
         // Note: PubSub requires a separate connection, not ConnectionManager
         // This is a simplified implementation
-        let redis_url = std::env::var("REDIS_URL").unwrap_or_else(|_| "redis://127.0.0.1/".to_string());
+        let redis_url =
+            std::env::var("REDIS_URL").unwrap_or_else(|_| "redis://127.0.0.1/".to_string());
         let client = Client::open(redis_url)?;
         let conn = client.get_async_connection().await?;
         let mut pubsub = conn.into_pubsub();

@@ -1,7 +1,9 @@
 """Exchange integration using CCXT."""
 
-from typing import Dict, Any, Optional, List
+from typing import Any, Dict, List, Optional
+
 import ccxt
+
 from .config import settings
 
 
@@ -10,7 +12,7 @@ class ExchangeClient:
 
     def __init__(self, exchange_name: str = "coinbase"):
         """Initialize exchange client.
-        
+
         Args:
             exchange_name: Name of the exchange (e.g., "coinbase", "binance")
         """
@@ -20,26 +22,30 @@ class ExchangeClient:
     def _initialize_exchange(self, exchange_name: str) -> ccxt.Exchange:
         """Initialize the exchange client."""
         if exchange_name == "coinbase":
-            return ccxt.coinbase({
-                "apiKey": settings.coinbase_api_key,
-                "secret": settings.coinbase_api_secret,
-                "enableRateLimit": True,
-            })
+            return ccxt.coinbase(
+                {
+                    "apiKey": settings.coinbase_api_key,
+                    "secret": settings.coinbase_api_secret,
+                    "enableRateLimit": True,
+                }
+            )
         elif exchange_name == "binance":
-            return ccxt.binance({
-                "apiKey": settings.binance_api_key,
-                "secret": settings.binance_api_secret,
-                "enableRateLimit": True,
-            })
+            return ccxt.binance(
+                {
+                    "apiKey": settings.binance_api_key,
+                    "secret": settings.binance_api_secret,
+                    "enableRateLimit": True,
+                }
+            )
         else:
             raise ValueError(f"Unsupported exchange: {exchange_name}")
 
     def get_ticker(self, symbol: str) -> Dict[str, Any]:
         """Get current ticker data for a symbol.
-        
+
         Args:
             symbol: Trading pair symbol (e.g., "BTC/USD")
-            
+
         Returns:
             Ticker data including price, volume, etc.
         """
@@ -47,11 +53,11 @@ class ExchangeClient:
 
     def get_orderbook(self, symbol: str, limit: int = 20) -> Dict[str, Any]:
         """Get order book for a symbol.
-        
+
         Args:
             symbol: Trading pair symbol
             limit: Number of orders to fetch
-            
+
         Returns:
             Order book with bids and asks
         """
@@ -64,12 +70,12 @@ class ExchangeClient:
         limit: int = 100,
     ) -> List[List[Any]]:
         """Get OHLCV (candlestick) data.
-        
+
         Args:
             symbol: Trading pair symbol
             timeframe: Timeframe (e.g., "1m", "5m", "1h", "1d")
             limit: Number of candles to fetch
-            
+
         Returns:
             List of OHLCV data
         """
@@ -77,7 +83,7 @@ class ExchangeClient:
 
     def get_balance(self) -> Dict[str, Any]:
         """Get account balance.
-        
+
         Returns:
             Balance information for all assets
         """
@@ -90,12 +96,12 @@ class ExchangeClient:
         amount: float,
     ) -> Dict[str, Any]:
         """Create a market order.
-        
+
         Args:
             symbol: Trading pair symbol
             side: "buy" or "sell"
             amount: Order amount
-            
+
         Returns:
             Order information
         """
@@ -114,13 +120,13 @@ class ExchangeClient:
         price: float,
     ) -> Dict[str, Any]:
         """Create a limit order.
-        
+
         Args:
             symbol: Trading pair symbol
             side: "buy" or "sell"
             amount: Order amount
             price: Limit price
-            
+
         Returns:
             Order information
         """
@@ -134,11 +140,11 @@ class ExchangeClient:
 
     def cancel_order(self, order_id: str, symbol: str) -> Dict[str, Any]:
         """Cancel an order.
-        
+
         Args:
             order_id: Order ID to cancel
             symbol: Trading pair symbol
-            
+
         Returns:
             Cancellation information
         """
@@ -146,11 +152,11 @@ class ExchangeClient:
 
     def get_order_status(self, order_id: str, symbol: str) -> Dict[str, Any]:
         """Get order status.
-        
+
         Args:
             order_id: Order ID
             symbol: Trading pair symbol
-            
+
         Returns:
             Order status information
         """
@@ -158,10 +164,10 @@ class ExchangeClient:
 
     def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get open orders.
-        
+
         Args:
             symbol: Optional trading pair symbol to filter
-            
+
         Returns:
             List of open orders
         """
@@ -169,17 +175,17 @@ class ExchangeClient:
 
     def get_market_data(self, symbol: str) -> Dict[str, Any]:
         """Get comprehensive market data for analysis.
-        
+
         Args:
             symbol: Trading pair symbol
-            
+
         Returns:
             Comprehensive market data
         """
         ticker = self.get_ticker(symbol)
         orderbook = self.get_orderbook(symbol)
         ohlcv = self.get_ohlcv(symbol, timeframe="1h", limit=24)
-        
+
         return {
             "ticker": ticker,
             "orderbook": orderbook,

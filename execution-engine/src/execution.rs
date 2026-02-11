@@ -1,8 +1,11 @@
-use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 
-use crate::{Error, Result, crypto::{SigningKey, Signature}};
+use crate::{
+    crypto::{Signature, SigningKey},
+    Error, Result,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum OrderSide {
@@ -45,12 +48,12 @@ impl Order {
         let mut data = Vec::new();
         data.extend_from_slice(self.id.as_bytes());
         data.extend_from_slice(self.symbol.as_bytes());
-        
+
         match self.side {
             OrderSide::Buy => data.push(0),
             OrderSide::Sell => data.push(1),
         }
-        
+
         match self.order_type {
             OrderType::Market => data.push(0),
             OrderType::Limit { price } => {
@@ -58,10 +61,10 @@ impl Order {
                 data.extend_from_slice(&price.to_le_bytes());
             }
         }
-        
+
         data.extend_from_slice(&self.quantity.to_le_bytes());
         data.extend_from_slice(&self.timestamp.timestamp().to_le_bytes());
-        
+
         Ok(data)
     }
 
@@ -110,7 +113,7 @@ impl ExecutionEngine {
         // 2. Submit to exchange via CCXT
         // 3. Monitor execution
         // 4. Return results
-        
+
         tracing::info!("Executing order: {:?}", order);
 
         // Placeholder: simulate successful execution

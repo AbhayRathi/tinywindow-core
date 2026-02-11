@@ -1,8 +1,10 @@
 """Claude API integration for LLM-based trading decisions."""
 
-from typing import Optional, Dict, Any, List
 import json
+from typing import Any, Dict, Optional
+
 from anthropic import Anthropic
+
 from .config import settings
 
 
@@ -11,7 +13,7 @@ class ClaudeClient:
 
     def __init__(self, api_key: Optional[str] = None):
         """Initialize Claude client.
-        
+
         Args:
             api_key: Anthropic API key. If not provided, uses settings.
         """
@@ -27,18 +29,18 @@ class ClaudeClient:
         historical_performance: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Analyze market conditions and generate trading decision.
-        
+
         Args:
             symbol: Trading pair symbol (e.g., "BTC/USD")
             market_data: Current market data including price, volume, etc.
             historical_performance: Optional historical trading performance
-            
+
         Returns:
             Dict containing trading decision and reasoning
         """
         # Prepare the prompt
         prompt = self._build_analysis_prompt(symbol, market_data, historical_performance)
-        
+
         # Call Claude API
         response = self.client.messages.create(
             model=self.model,
@@ -51,13 +53,13 @@ class ClaudeClient:
                 }
             ],
         )
-        
+
         # Parse response
         content = response.content[0].text
-        
+
         # Extract structured decision from response
         decision = self._parse_decision(content)
-        
+
         return {
             "symbol": symbol,
             "decision": decision,
@@ -103,10 +105,10 @@ Provide your analysis and recommendation:"""
 
     def _parse_decision(self, content: str) -> Dict[str, Any]:
         """Parse structured decision from Claude's response.
-        
+
         Args:
             content: Raw text response from Claude
-            
+
         Returns:
             Parsed decision dictionary
         """
@@ -115,14 +117,14 @@ Provide your analysis and recommendation:"""
             # Look for JSON block in the response
             start = content.find("{")
             end = content.rfind("}") + 1
-            
+
             if start != -1 and end > start:
                 json_str = content[start:end]
                 decision = json.loads(json_str)
                 return decision
         except (json.JSONDecodeError, ValueError):
             pass
-        
+
         # If parsing fails, return a default HOLD decision
         return {
             "action": "HOLD",
@@ -140,11 +142,11 @@ Provide your analysis and recommendation:"""
         market_context: Dict[str, Any],
     ) -> str:
         """Generate a detailed explanation of a trading decision.
-        
+
         Args:
             decision: The trading decision to explain
             market_context: Market context at the time of decision
-            
+
         Returns:
             Detailed explanation string
         """
@@ -169,5 +171,5 @@ Provide a comprehensive explanation suitable for audit and compliance purposes."
                 }
             ],
         )
-        
+
         return response.content[0].text

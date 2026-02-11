@@ -40,10 +40,13 @@ def mock_external_apis():
         with patch('ccxt.coinbase') as mock_coinbase:
             with patch('ccxt.binance') as mock_binance:
                 mock_exchange = Mock()
-                mock_exchange.fetch_ticker = Mock(return_value={"last": 50000.0})
-                mock_exchange.fetch_order_book = Mock(return_value={"bids": [], "asks": []})
-                mock_exchange.fetch_ohlcv = Mock(return_value=[])
-                mock_exchange.fetch_balance = Mock(return_value={"total": {"USD": 10000.0}})
+                mock_exchange.fetch_ticker = AsyncMock(return_value={"last": 50000.0, "timestamp": 1234567890000})
+                mock_exchange.fetch_order_book = AsyncMock(return_value={"bids": [], "asks": []})
+                mock_exchange.fetch_ohlcv = AsyncMock(return_value=[])
+                mock_exchange.fetch_balance = AsyncMock(return_value={"total": {"USD": 10000.0}})
+                mock_exchange.create_order = AsyncMock(return_value={"id": "order123", "status": "closed"})
+                mock_exchange.cancel_order = AsyncMock(return_value={"id": "order123", "status": "canceled"})
+                mock_exchange.fetch_order = AsyncMock(return_value={"id": "order123", "status": "closed"})
                 mock_coinbase.return_value = mock_exchange
                 mock_binance.return_value = mock_exchange
                 

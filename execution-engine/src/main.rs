@@ -1,5 +1,5 @@
-use execution_engine::{ExecutionEngine, SigningKey};
 use execution_engine::execution::{Order, OrderSide, OrderType};
+use execution_engine::{ExecutionEngine, SigningKey};
 use tracing_subscriber;
 
 #[tokio::main]
@@ -38,7 +38,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Database and Redis connections would be initialized here in production
     // with proper configuration from environment variables
-    
+
     tracing::info!("TinyWindow Execution Engine running");
 
     Ok(())

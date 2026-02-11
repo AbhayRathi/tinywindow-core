@@ -1,9 +1,12 @@
-use sqlx::{PgPool, postgres::PgPoolOptions};
-use serde::{Serialize, Deserialize};
 use chrono::{DateTime, Utc};
+use serde::{Deserialize, Serialize};
+use sqlx::{postgres::PgPoolOptions, PgPool};
 use uuid::Uuid;
 
-use crate::{Result, execution::{OrderResult, OrderStatus}};
+use crate::{
+    execution::{OrderResult, OrderStatus},
+    Result,
+};
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct OrderRecord {
@@ -57,7 +60,7 @@ impl Database {
             CREATE INDEX IF NOT EXISTS idx_orders_symbol ON orders(symbol);
             CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
             CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
-            "#
+            "#,
         )
         .execute(&self.pool)
         .await?;
@@ -74,7 +77,7 @@ impl Database {
             );
 
             CREATE INDEX IF NOT EXISTS idx_decisions_order_id ON decisions(order_id);
-            "#
+            "#,
         )
         .execute(&self.pool)
         .await?;
@@ -83,7 +86,7 @@ impl Database {
     }
 
     /// Store an order result
-    /// 
+    ///
     /// Note: This is a simplified implementation. In production, you would need to either:
     /// 1. Add order details (symbol, side, type, quantity) to OrderResult, or
     /// 2. Pass both the original Order and OrderResult to this function
@@ -133,7 +136,7 @@ impl Database {
             FROM orders
             ORDER BY created_at DESC
             LIMIT $1
-            "#
+            "#,
         )
         .bind(limit)
         .fetch_all(&self.pool)

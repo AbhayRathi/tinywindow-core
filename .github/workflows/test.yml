@@ -97,6 +97,6 @@ jobs:
         with:
           node-version: '18'
       - name: Install dependencies
-        run: cd contracts && npm ci
+        run: cd contracts && npm install
       - name: Run tests
         run: cd contracts && npx hardhat test

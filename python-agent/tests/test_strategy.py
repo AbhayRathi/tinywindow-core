@@ -118,7 +118,7 @@ class TestTradingStrategy:
 
     def test_validate_decision_low_confidence(self, strategy, mock_settings):
         """Test validation fails with low confidence."""
-        with patch('tinywindow.strategy.settings', mock_settings):
+        with patch('tinywindow.config.settings', mock_settings):
             decision = TradingDecision(
                 action=Action.BUY,
                 symbol="BTC/USD",
@@ -159,7 +159,7 @@ class TestTradingStrategy:
 
     def test_calculate_position_size(self, strategy, sample_trading_decision, mock_settings):
         """Test position size calculation."""
-        with patch('tinywindow.strategy.settings', mock_settings):
+        with patch('tinywindow.config.settings', mock_settings):
             portfolio_value = 100000.0
             size = strategy.calculate_position_size(sample_trading_decision, portfolio_value)
             
@@ -173,7 +173,7 @@ class TestTradingStrategy:
 
     def test_calculate_position_size_respects_max(self, strategy, mock_settings):
         """Test position size respects maximum."""
-        with patch('tinywindow.strategy.settings', mock_settings):
+        with patch('tinywindow.config.settings', mock_settings):
             decision = TradingDecision(
                 action=Action.BUY,
                 symbol="BTC/USD",

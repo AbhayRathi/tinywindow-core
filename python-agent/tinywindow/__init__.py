@@ -3,8 +3,8 @@
 __version__ = "0.1.0"
 
 from .agent import TradingAgent
-from .strategy import TradingStrategy
 from .llm import ClaudeClient
 from .orchestrator import Orchestrator
+from .strategy import TradingStrategy
 
 __all__ = ["TradingAgent", "TradingStrategy", "ClaudeClient", "Orchestrator"]
