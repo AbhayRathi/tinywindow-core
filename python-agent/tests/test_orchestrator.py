@@ -13,7 +13,10 @@ class TestOrchestrator:
     @pytest.fixture
     def orchestrator(self):
         """Create Orchestrator instance."""
-        return Orchestrator()
+        with patch('tinywindow.orchestrator.ClaudeClient'):
+            with patch('tinywindow.orchestrator.ExchangeClient'):
+                orch = Orchestrator()
+                yield orch
 
     def test_initialization(self, orchestrator):
         """Test orchestrator initialization."""

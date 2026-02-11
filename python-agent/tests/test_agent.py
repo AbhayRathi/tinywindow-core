@@ -51,10 +51,12 @@ class TestTradingAgent:
 
     async def test_agent_initialization(self):
         """Test agent initialization."""
-        agent = TradingAgent("test-agent-1")
-        assert agent.agent_id == "test-agent-1"
-        assert agent.active is False
-        assert len(agent.decisions_log) == 0
+        with patch('tinywindow.agent.ClaudeClient'):
+            with patch('tinywindow.agent.ExchangeClient'):
+                agent = TradingAgent("test-agent-1")
+                assert agent.agent_id == "test-agent-1"
+                assert agent.active is False
+                assert len(agent.decisions_log) == 0
 
     async def test_analyze_and_trade_buy(self, agent, mock_strategy, mock_exchange):
         """Test analyze and trade with BUY decision."""

@@ -3,7 +3,7 @@
 import os
 import pytest
 import asyncio
-from unittest.mock import Mock, AsyncMock
+from unittest.mock import Mock, AsyncMock, patch
 from typing import Dict, Any
 
 
@@ -25,6 +25,29 @@ def use_test_environment(monkeypatch):
     monkeypatch.setenv("DATABASE_URL", "postgresql://test:test@localhost:5432/tinywindow_test")
     monkeypatch.setenv("REDIS_URL", "redis://localhost:6379/0")
     monkeypatch.setenv("ANTHROPIC_API_KEY", "test-api-key")
+
+
+@pytest.fixture(autouse=True)
+def mock_external_apis():
+    """Mock external APIs globally."""
+    with patch('anthropic.Anthropic') as mock_anthropic:
+        mock_client = Mock()
+        mock_message = Mock()
+        mock_message.content = [Mock(text='{"action": "HOLD", "confidence": 0.0}')]
+        mock_client.messages.create.return_value = mock_message
+        mock_anthropic.return_value = mock_client
+        
+        with patch('ccxt.coinbase') as mock_coinbase:
+            with patch('ccxt.binance') as mock_binance:
+                mock_exchange = Mock()
+                mock_exchange.fetch_ticker = Mock(return_value={"last": 50000.0})
+                mock_exchange.fetch_order_book = Mock(return_value={"bids": [], "asks": []})
+                mock_exchange.fetch_ohlcv = Mock(return_value=[])
+                mock_exchange.fetch_balance = Mock(return_value={"total": {"USD": 10000.0}})
+                mock_coinbase.return_value = mock_exchange
+                mock_binance.return_value = mock_exchange
+                
+                yield
 
 
 @pytest.fixture
