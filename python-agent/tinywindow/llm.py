@@ -1,7 +1,7 @@
 """Claude API integration for LLM-based trading decisions."""
 
 import json
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from anthropic import Anthropic
 
@@ -25,9 +25,9 @@ class ClaudeClient:
     async def analyze_market(
         self,
         symbol: str,
-        market_data: Dict[str, Any],
-        historical_performance: Optional[Dict[str, Any]] = None,
-    ) -> Dict[str, Any]:
+        market_data: dict[str, Any],
+        historical_performance: Optional[dict[str, Any]] = None,
+    ) -> dict[str, Any]:
         """Analyze market conditions and generate trading decision.
 
         Args:
@@ -70,8 +70,8 @@ class ClaudeClient:
     def _build_analysis_prompt(
         self,
         symbol: str,
-        market_data: Dict[str, Any],
-        historical_performance: Optional[Dict[str, Any]],
+        market_data: dict[str, Any],
+        historical_performance: Optional[dict[str, Any]],
     ) -> str:
         """Build the analysis prompt for Claude."""
         prompt = f"""You are an expert quantitative trader analyzing market conditions for {symbol}.
@@ -103,7 +103,7 @@ Provide your analysis and recommendation:"""
 
         return prompt
 
-    def _parse_decision(self, content: str) -> Dict[str, Any]:
+    def _parse_decision(self, content: str) -> dict[str, Any]:
         """Parse structured decision from Claude's response.
 
         Args:
@@ -138,8 +138,8 @@ Provide your analysis and recommendation:"""
 
     async def explain_decision(
         self,
-        decision: Dict[str, Any],
-        market_context: Dict[str, Any],
+        decision: dict[str, Any],
+        market_context: dict[str, Any],
     ) -> str:
         """Generate a detailed explanation of a trading decision.
 

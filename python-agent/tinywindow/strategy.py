@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from .exchange import ExchangeClient
 from .llm import ClaudeClient
@@ -29,7 +29,7 @@ class TradingDecision:
     take_profit: Optional[float] = None
     reasoning: str = ""
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "action": self.action.value,
@@ -59,7 +59,7 @@ class TradingStrategy:
         """
         self.llm = llm_client or ClaudeClient()
         self.exchange = exchange_client or ExchangeClient()
-        self.historical_performance: Dict[str, Any] = {}
+        self.historical_performance: dict[str, Any] = {}
 
     async def analyze(self, symbol: str) -> TradingDecision:
         """Analyze market and generate trading decision.
@@ -153,7 +153,7 @@ class TradingStrategy:
         self,
         symbol: str,
         decision: TradingDecision,
-        result: Dict[str, Any],
+        result: dict[str, Any],
     ) -> None:
         """Update historical performance data.
 

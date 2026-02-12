@@ -2,7 +2,7 @@
 
 import asyncio
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Optional
 
 from .exchange import ExchangeClient
 from .llm import ClaudeClient
@@ -32,7 +32,7 @@ class TradingAgent:
         self.exchange = exchange_client or ExchangeClient()
         self.strategy = strategy or TradingStrategy(self.llm, self.exchange)
         self.active = False
-        self.decisions_log: list[Dict[str, Any]] = []
+        self.decisions_log: list[dict[str, Any]] = []
 
     async def run(self, symbols: list[str], interval: int = 300):
         """Run the trading agent continuously.
@@ -59,7 +59,7 @@ class TradingAgent:
         self.active = False
         print(f"Trading agent {self.agent_id} stopped")
 
-    async def analyze_and_trade(self, symbol: str) -> Optional[Dict[str, Any]]:
+    async def analyze_and_trade(self, symbol: str) -> Optional[dict[str, Any]]:
         """Analyze market and execute trade if conditions are met.
 
         Args:
@@ -94,7 +94,7 @@ class TradingAgent:
 
         return None
 
-    async def execute_trade(self, decision: TradingDecision) -> Dict[str, Any]:
+    async def execute_trade(self, decision: TradingDecision) -> dict[str, Any]:
         """Execute a trading decision.
 
         Args:
@@ -171,7 +171,7 @@ class TradingAgent:
 
         self.decisions_log.append(log_entry)
 
-    def get_decision_history(self) -> list[Dict[str, Any]]:
+    def get_decision_history(self) -> list[dict[str, Any]]:
         """Get the decision history.
 
         Returns:
@@ -179,7 +179,7 @@ class TradingAgent:
         """
         return self.decisions_log
 
-    async def generate_proof(self, decision: TradingDecision) -> Dict[str, Any]:
+    async def generate_proof(self, decision: TradingDecision) -> dict[str, Any]:
         """Generate cryptographic proof of decision.
 
         Args:

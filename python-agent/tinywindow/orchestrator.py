@@ -1,7 +1,7 @@
 """Orchestrator for managing multiple trading agents."""
 
 import asyncio
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 from .agent import TradingAgent
 from .exchange import ExchangeClient
@@ -14,7 +14,7 @@ class Orchestrator:
 
     def __init__(self):
         """Initialize orchestrator."""
-        self.agents: Dict[str, TradingAgent] = {}
+        self.agents: dict[str, TradingAgent] = {}
         self.llm = ClaudeClient()
         self.exchange = ExchangeClient()
         self.running = False
@@ -60,7 +60,7 @@ class Orchestrator:
             del self.agents[agent_id]
             print(f"Removed agent: {agent_id}")
 
-    async def start_agent(self, agent_id: str, symbols: List[str], interval: int = 300):
+    async def start_agent(self, agent_id: str, symbols: list[str], interval: int = 300):
         """Start a trading agent.
 
         Args:
@@ -83,7 +83,7 @@ class Orchestrator:
         if agent_id in self.agents:
             self.agents[agent_id].stop()
 
-    async def run_all(self, symbols: List[str], interval: int = 300):
+    async def run_all(self, symbols: list[str], interval: int = 300):
         """Run all agents concurrently.
 
         Args:
@@ -102,7 +102,7 @@ class Orchestrator:
         for agent in self.agents.values():
             agent.stop()
 
-    def get_agent_status(self) -> Dict[str, Any]:
+    def get_agent_status(self) -> dict[str, Any]:
         """Get status of all agents.
 
         Returns:
@@ -116,7 +116,7 @@ class Orchestrator:
             for agent_id, agent in self.agents.items()
         }
 
-    def get_all_decisions(self) -> Dict[str, List[Dict[str, Any]]]:
+    def get_all_decisions(self) -> dict[str, list[dict[str, Any]]]:
         """Get decision history from all agents.
 
         Returns:
@@ -126,8 +126,8 @@ class Orchestrator:
 
     async def execute_coordinated_strategy(
         self,
-        symbols: List[str],
-    ) -> Dict[str, Any]:
+        symbols: list[str],
+    ) -> dict[str, Any]:
         """Execute a coordinated strategy across multiple agents.
 
         Args:

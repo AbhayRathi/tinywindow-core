@@ -1,6 +1,6 @@
 """Exchange integration using CCXT."""
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Optional
 
 import ccxt
 
@@ -40,7 +40,7 @@ class ExchangeClient:
         else:
             raise ValueError(f"Unsupported exchange: {exchange_name}")
 
-    def get_ticker(self, symbol: str) -> Dict[str, Any]:
+    def get_ticker(self, symbol: str) -> dict[str, Any]:
         """Get current ticker data for a symbol.
 
         Args:
@@ -51,7 +51,7 @@ class ExchangeClient:
         """
         return self.exchange.fetch_ticker(symbol)
 
-    def get_orderbook(self, symbol: str, limit: int = 20) -> Dict[str, Any]:
+    def get_orderbook(self, symbol: str, limit: int = 20) -> dict[str, Any]:
         """Get order book for a symbol.
 
         Args:
@@ -68,7 +68,7 @@ class ExchangeClient:
         symbol: str,
         timeframe: str = "1h",
         limit: int = 100,
-    ) -> List[List[Any]]:
+    ) -> list[list[Any]]:
         """Get OHLCV (candlestick) data.
 
         Args:
@@ -81,7 +81,7 @@ class ExchangeClient:
         """
         return self.exchange.fetch_ohlcv(symbol, timeframe, limit=limit)
 
-    def get_balance(self) -> Dict[str, Any]:
+    def get_balance(self) -> dict[str, Any]:
         """Get account balance.
 
         Returns:
@@ -94,7 +94,7 @@ class ExchangeClient:
         symbol: str,
         side: str,
         amount: float,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create a market order.
 
         Args:
@@ -118,7 +118,7 @@ class ExchangeClient:
         side: str,
         amount: float,
         price: float,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """Create a limit order.
 
         Args:
@@ -138,7 +138,7 @@ class ExchangeClient:
             price=price,
         )
 
-    def cancel_order(self, order_id: str, symbol: str) -> Dict[str, Any]:
+    def cancel_order(self, order_id: str, symbol: str) -> dict[str, Any]:
         """Cancel an order.
 
         Args:
@@ -150,7 +150,7 @@ class ExchangeClient:
         """
         return self.exchange.cancel_order(order_id, symbol)
 
-    def get_order_status(self, order_id: str, symbol: str) -> Dict[str, Any]:
+    def get_order_status(self, order_id: str, symbol: str) -> dict[str, Any]:
         """Get order status.
 
         Args:
@@ -162,7 +162,7 @@ class ExchangeClient:
         """
         return self.exchange.fetch_order(order_id, symbol)
 
-    def get_open_orders(self, symbol: Optional[str] = None) -> List[Dict[str, Any]]:
+    def get_open_orders(self, symbol: Optional[str] = None) -> list[dict[str, Any]]:
         """Get open orders.
 
         Args:
@@ -173,7 +173,7 @@ class ExchangeClient:
         """
         return self.exchange.fetch_open_orders(symbol)
 
-    def get_market_data(self, symbol: str) -> Dict[str, Any]:
+    def get_market_data(self, symbol: str) -> dict[str, Any]:
         """Get comprehensive market data for analysis.
 
         Args:
