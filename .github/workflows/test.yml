@@ -1,0 +1,102 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, develop, copilot/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  rust-tests:
+    name: Rust Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: tinywindow_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://test:test@localhost:5432/tinywindow_test
+          REDIS_URL: redis://localhost:6379
+        run: cargo test --verbose
+
+  python-tests:
+    name: Python Tests
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_DB: tinywindow_test
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+    
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/tinywindow_test
+      REDIS_URL: redis://localhost:6379/0
+      ANTHROPIC_API_KEY: test-api-key
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: cd python-agent && pip install -e ".[dev]"
+      - name: Run tests
+        run: cd python-agent && pytest --cov-report=xml
+
+  solidity-tests:
+    name: Solidity Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install dependencies
+        run: cd contracts && npm install
+      - name: Run tests
+        run: cd contracts && npx hardhat test
