@@ -1,6 +1,5 @@
 use execution_engine::execution::{Order, OrderSide, OrderType};
 use execution_engine::{ExecutionEngine, SigningKey};
-use tracing_subscriber;
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
