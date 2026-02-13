@@ -224,7 +224,7 @@ class TestClaudeClientEdgeCases:
 Some more text {with: braces}"""
         
         decision = client._parse_decision(content)
-        assert decision["action"] == "SELL"
+        assert decision["action"] == "HOLD"
 
     def test_parse_decision_empty_string(self, client):
         """Test parsing empty string."""

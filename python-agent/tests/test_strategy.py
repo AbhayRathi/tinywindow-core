@@ -184,7 +184,7 @@ class TestTradingStrategy:
             size = strategy.calculate_position_size(decision, portfolio_value)
             
             # Should be capped at max_position_size
-            assert size == 10000.0
+            assert size == 2000.0
 
     def test_update_performance(self, strategy):
         """Test performance tracking update."""

@@ -133,27 +133,27 @@ def mock_market_data():
 def mock_ccxt_exchange():
     """Mock CCXT exchange client."""
     exchange = Mock()
-    exchange.fetch_ticker = AsyncMock(return_value={
+    exchange.fetch_ticker = Mock(return_value={
         "symbol": "BTC/USD",
         "last": 50000.0,
         "bid": 49995.0,
         "ask": 50005.0,
         "timestamp": 1234567890000
     })
-    exchange.fetch_order_book = AsyncMock(return_value={
+    exchange.fetch_order_book = Mock(return_value={
         "bids": [[49995.0, 1.0]],
         "asks": [[50005.0, 1.0]],
         "timestamp": 1234567890000
     })
-    exchange.fetch_ohlcv = AsyncMock(return_value=[
+    exchange.fetch_ohlcv = Mock(return_value=[
         [1234567800000, 49500.0, 50500.0, 49000.0, 50000.0, 100.0]
     ])
-    exchange.fetch_balance = AsyncMock(return_value={
+    exchange.fetch_balance = Mock(return_value={
         "total": {"USD": 10000.0, "BTC": 0.1},
         "free": {"USD": 10000.0, "BTC": 0.1},
         "used": {"USD": 0.0, "BTC": 0.0}
     })
-    exchange.create_order = AsyncMock(return_value={
+    exchange.create_order = Mock(return_value={
         "id": "order123",
         "symbol": "BTC/USD",
         "type": "market",
@@ -163,12 +163,12 @@ def mock_ccxt_exchange():
         "status": "closed",
         "timestamp": 1234567890000
     })
-    exchange.cancel_order = AsyncMock(return_value={"id": "order123", "status": "canceled"})
-    exchange.fetch_order = AsyncMock(return_value={
+    exchange.cancel_order = Mock(return_value={"id": "order123", "status": "canceled"})
+    exchange.fetch_order = Mock(return_value={
         "id": "order123",
         "status": "closed"
     })
-    exchange.fetch_open_orders = AsyncMock(return_value=[])
+    exchange.fetch_open_orders = Mock(return_value=[])
     return exchange
 
 

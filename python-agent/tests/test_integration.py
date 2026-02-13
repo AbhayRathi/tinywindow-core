@@ -1,7 +1,7 @@
 """Integration tests for end-to-end trading flow."""
 
 import pytest
-from unittest.mock import Mock, AsyncMock, patch
+from unittest.mock import Mock, patch
 from tinywindow import Orchestrator, TradingAgent
 from tinywindow.strategy import TradingStrategy, Action
 from tinywindow.llm import ClaudeClient
