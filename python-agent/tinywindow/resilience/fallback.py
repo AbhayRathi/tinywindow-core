@@ -8,8 +8,7 @@ Provides:
 
 import asyncio
 import logging
-from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Callable, Optional

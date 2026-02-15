@@ -9,7 +9,8 @@ Provides timeout protection with:
 import asyncio
 import functools
 import logging
-from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import TimeoutError as FuturesTimeoutError
 from dataclasses import dataclass
 from typing import Any, Callable, Optional
 
@@ -72,7 +73,7 @@ def with_timeout(
                 raise TimeoutError(
                     f"{func.__name__} timed out after {config.timeout_seconds}s",
                     config.timeout_seconds,
-                )
+                ) from None
 
         @functools.wraps(func)
         def sync_wrapper(*args, **kwargs) -> Any:
@@ -92,7 +93,7 @@ def with_timeout(
                     raise TimeoutError(
                         f"{func.__name__} timed out after {config.timeout_seconds}s",
                         config.timeout_seconds,
-                    )
+                    ) from None
 
         if asyncio.iscoroutinefunction(func):
             return async_wrapper
@@ -131,4 +132,4 @@ async def with_async_timeout(
         raise TimeoutError(
             f"{error_message} after {timeout_seconds}s",
             timeout_seconds,
-        )
+        ) from None

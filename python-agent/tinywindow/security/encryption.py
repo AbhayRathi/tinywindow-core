@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 # Attempt to import cryptography library
 try:
-    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     from cryptography.hazmat.primitives import hashes
+    from cryptography.hazmat.primitives.ciphers.aead import AESGCM
     from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
     CRYPTO_AVAILABLE = True
@@ -126,7 +126,7 @@ def encrypt_data(
         return base64.b64encode(encrypted).decode("ascii")
 
     except Exception as e:
-        raise EncryptionError(f"Encryption failed: {e}")
+        raise EncryptionError(f"Encryption failed: {e}") from e
 
 
 def decrypt_data(
@@ -170,7 +170,7 @@ def decrypt_data(
         return plaintext.decode("utf-8")
 
     except Exception as e:
-        raise EncryptionError(f"Decryption failed: {e}")
+        raise EncryptionError(f"Decryption failed: {e}") from e
 
 
 def _get_key_from_env() -> bytes:
@@ -194,8 +194,8 @@ def _get_key_from_env() -> bytes:
         # Try as hex
         try:
             return bytes.fromhex(key_b64)
-        except Exception:
-            raise EncryptionError("Invalid encryption key format")
+        except Exception as e:
+            raise EncryptionError("Invalid encryption key format") from e
 
 
 class EncryptionManager:

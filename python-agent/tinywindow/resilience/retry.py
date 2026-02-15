@@ -11,7 +11,7 @@ import functools
 import logging
 import random
 from dataclasses import dataclass, field
-from typing import Any, Callable, Optional, Tuple, Type
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -34,10 +34,10 @@ class RetryConfig:
     max_delay: float = 60.0  # Maximum delay in seconds
     exponential_base: float = 2.0  # Exponential backoff base
     jitter: float = 0.1  # Random jitter factor (0-1)
-    retryable_exceptions: Tuple[Type[Exception], ...] = field(
+    retryable_exceptions: tuple[type[Exception], ...] = field(
         default_factory=lambda: (Exception,)
     )
-    non_retryable_exceptions: Tuple[Type[Exception], ...] = field(
+    non_retryable_exceptions: tuple[type[Exception], ...] = field(
         default_factory=lambda: NON_RETRYABLE_EXCEPTIONS
     )
 
@@ -89,7 +89,7 @@ def should_retry(
 
 def retry_with_backoff(
     max_attempts: int = 3,
-    exceptions: Optional[Tuple[Type[Exception], ...]] = None,
+    exceptions: Optional[tuple[type[Exception], ...]] = None,
     base_delay: float = 1.0,
     max_delay: float = 60.0,
     on_retry: Optional[Callable[[Exception, int], None]] = None,

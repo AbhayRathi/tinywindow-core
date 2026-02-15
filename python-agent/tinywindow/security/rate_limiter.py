@@ -11,7 +11,7 @@ import logging
 import threading
 import time
 from dataclasses import dataclass
-from typing import Dict, Optional, Tuple
+from typing import Optional
 
 logger = logging.getLogger(__name__)
 
@@ -65,7 +65,7 @@ class TokenBucketLimiter:
             self._tokens + (elapsed * self._refill_rate),
         )
 
-    def acquire(self, tokens: int = 1) -> Tuple[bool, float]:
+    def acquire(self, tokens: int = 1) -> tuple[bool, float]:
         """Try to acquire tokens.
 
         Args:
@@ -136,7 +136,7 @@ class RateLimiter:
 
     def __init__(self):
         """Initialize rate limiter."""
-        self._limiters: Dict[str, TokenBucketLimiter] = {}
+        self._limiters: dict[str, TokenBucketLimiter] = {}
         self._lock = threading.Lock()
 
     def configure_service(
@@ -163,7 +163,7 @@ class RateLimiter:
             self._limiters[service] = TokenBucketLimiter(config)
         logger.info(f"Configured rate limit for {service}: {requests_per_minute}/min")
 
-    def can_request(self, service: str, tokens: int = 1) -> Tuple[bool, float]:
+    def can_request(self, service: str, tokens: int = 1) -> tuple[bool, float]:
         """Check if request is allowed.
 
         Args:
@@ -198,7 +198,7 @@ class RateLimiter:
 
         return await limiter.acquire_async(tokens)
 
-    def get_status(self, service: str) -> Optional[Dict]:
+    def get_status(self, service: str) -> Optional[dict]:
         """Get rate limiter status for a service.
 
         Args:
@@ -219,7 +219,7 @@ class RateLimiter:
                 "burst_size": limiter.config.burst_size,
             }
 
-    def get_all_status(self) -> Dict[str, Dict]:
+    def get_all_status(self) -> dict[str, dict]:
         """Get status for all services."""
         with self._lock:
             return {

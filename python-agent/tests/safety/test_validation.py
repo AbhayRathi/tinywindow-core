@@ -7,8 +7,8 @@ from tinywindow.safety.validation import (
     ValidationResult,
     PromptSanitizer,
     SQLSanitizer,
-    RateLimiter,
-    RateLimitConfig,
+    ValidationRateLimiter,
+    ValidationRateLimitConfig,
     OrderSide,
     OrderType,
     CLAUDE_RATE_LIMITER,
@@ -243,12 +243,12 @@ class TestRateLimiter:
     @pytest.fixture
     def rate_limiter(self):
         """Create rate limiter with low limits for testing."""
-        config = RateLimitConfig(
+        config = ValidationRateLimitConfig(
             requests_per_minute=5,
             requests_per_hour=10,
             burst_limit=3,
         )
-        return RateLimiter(config=config)
+        return ValidationRateLimiter(config=config)
 
     def test_initial_state(self, rate_limiter):
         """Test initial state allows requests."""

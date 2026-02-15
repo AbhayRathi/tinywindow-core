@@ -11,7 +11,6 @@ import logging
 import re
 import time
 from dataclasses import dataclass, field
-from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Optional
 
@@ -329,27 +328,27 @@ class SQLSanitizer:
 
 
 @dataclass
-class RateLimitConfig:
-    """Configuration for rate limiter."""
+class ValidationRateLimitConfig:
+    """Configuration for validation rate limiter."""
 
     requests_per_minute: int = 10
     requests_per_hour: int = 100
     burst_limit: int = 5  # Max requests in quick succession
 
 
-class RateLimiter:
-    """Rate limiter for external API calls.
+class ValidationRateLimiter:
+    """Rate limiter for external API calls in validation.
 
     Uses token bucket algorithm for smooth rate limiting.
     """
 
-    def __init__(self, config: Optional[RateLimitConfig] = None):
+    def __init__(self, config: Optional[ValidationRateLimitConfig] = None):
         """Initialize rate limiter.
 
         Args:
             config: Rate limit configuration
         """
-        self.config = config or RateLimitConfig()
+        self.config = config or ValidationRateLimitConfig()
         self._request_times: list[float] = []
         self._tokens = float(self.config.burst_limit)
         self._last_update = time.time()
@@ -441,15 +440,20 @@ class RateLimiter:
 
 
 # Pre-configured rate limiters for common services
-CLAUDE_RATE_LIMITER = RateLimiter(
-    RateLimitConfig(requests_per_minute=10, requests_per_hour=200, burst_limit=5)
+CLAUDE_RATE_LIMITER = ValidationRateLimiter(
+    ValidationRateLimitConfig(requests_per_minute=10, requests_per_hour=200, burst_limit=5)
 )
 
 EXCHANGE_RATE_LIMITERS = {
-    "coinbase": RateLimiter(
-        RateLimitConfig(requests_per_minute=30, requests_per_hour=1000, burst_limit=10)
+    "coinbase": ValidationRateLimiter(
+        ValidationRateLimitConfig(requests_per_minute=30, requests_per_hour=1000, burst_limit=10)
     ),
-    "binance": RateLimiter(
-        RateLimitConfig(requests_per_minute=1200, requests_per_hour=50000, burst_limit=50)
+    "binance": ValidationRateLimiter(
+        ValidationRateLimitConfig(requests_per_minute=1200, requests_per_hour=50000, burst_limit=50)
     ),
 }
+
+
+# Backward compatibility aliases
+RateLimiter = ValidationRateLimiter
+RateLimitConfig = ValidationRateLimitConfig

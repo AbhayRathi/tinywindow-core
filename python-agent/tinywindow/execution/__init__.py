@@ -6,9 +6,9 @@ This module provides:
 - Slippage model for realistic fill simulation
 """
 
-from .paper_trading import PaperTradingExecutor, ExecutionResult
 from .paper_portfolio import PaperPortfolio
-from .slippage_model import SlippageModel, SlippageConfig
+from .paper_trading import ExecutionResult, PaperTradingExecutor
+from .slippage_model import SlippageConfig, SlippageModel
 
 __all__ = [
     "PaperTradingExecutor",

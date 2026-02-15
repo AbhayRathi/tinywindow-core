@@ -11,7 +11,7 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from enum import Enum
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -71,7 +71,7 @@ class KeyRotationManager:
         self.vault = vault_client
         self.config = config or RotationConfig()
         self._notify = notification_callback or self._default_notify
-        self._states: Dict[str, KeyRotationState] = {}
+        self._states: dict[str, KeyRotationState] = {}
         self._running = False
 
     def _default_notify(self, service: str, message: str) -> None:
@@ -115,7 +115,7 @@ class KeyRotationManager:
         """
         return self._states.get(service)
 
-    def get_all_states(self) -> Dict[str, KeyRotationState]:
+    def get_all_states(self) -> dict[str, KeyRotationState]:
         """Get all rotation states."""
         return self._states.copy()
 
@@ -141,14 +141,13 @@ class KeyRotationManager:
         state.status = RotationStatus.IN_PROGRESS
 
         try:
-            # Get current key
+            # Verify current key exists (optional - for logging purposes)
             key_path = f"api_keys/{service}"
 
             try:
-                current_secret = self.vault.read_secret(key_path)
-                old_key = current_secret.get("key")
+                self.vault.read_secret(key_path)
             except Exception:
-                old_key = None
+                pass  # Key may not exist yet, that's okay
 
             # Generate new key if not provided
             if new_key is None:

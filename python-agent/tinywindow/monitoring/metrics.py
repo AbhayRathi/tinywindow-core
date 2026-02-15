@@ -11,7 +11,7 @@ Exports metrics on port 8000 for Prometheus scraping:
 
 import logging
 import threading
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Optional
 
 logger = logging.getLogger(__name__)
@@ -34,7 +34,7 @@ class Counter:
 
     def labels(self, **kwargs) -> "CounterWithLabels":
         """Return a counter with specific labels."""
-        label_values = tuple(kwargs.get(l, "") for l in self._label_names)
+        label_values = tuple(kwargs.get(name, "") for name in self._label_names)
         return CounterWithLabels(self, label_values)
 
     def inc(self, value: float = 1.0) -> None:
@@ -60,7 +60,7 @@ class Counter:
             for label_values, value in self._values.items():
                 if label_values:
                     labels_str = ",".join(
-                        f'{l}="{v}"' for l, v in zip(self._label_names, label_values)
+                        f'{name}="{val}"' for name, val in zip(self._label_names, label_values)
                     )
                     lines.append(f"{self.name}{{{labels_str}}} {value}")
                 else:
@@ -92,7 +92,7 @@ class Gauge:
 
     def labels(self, **kwargs) -> "GaugeWithLabels":
         """Return a gauge with specific labels."""
-        label_values = tuple(kwargs.get(l, "") for l in self._label_names)
+        label_values = tuple(kwargs.get(name, "") for name in self._label_names)
         return GaugeWithLabels(self, label_values)
 
     def set(self, value: float) -> None:
@@ -129,7 +129,7 @@ class Gauge:
             for label_values, value in self._values.items():
                 if label_values:
                     labels_str = ",".join(
-                        f'{l}="{v}"' for l, v in zip(self._label_names, label_values)
+                        f'{name}="{val}"' for name, val in zip(self._label_names, label_values)
                     )
                     lines.append(f"{self.name}{{{labels_str}}} {value}")
                 else:
@@ -182,7 +182,7 @@ class Histogram:
 
     def labels(self, **kwargs) -> "HistogramWithLabels":
         """Return a histogram with specific labels."""
-        label_values = tuple(kwargs.get(l, "") for l in self._label_names)
+        label_values = tuple(kwargs.get(name, "") for name in self._label_names)
         return HistogramWithLabels(self, label_values)
 
     def observe(self, value: float) -> None:
@@ -219,7 +219,7 @@ class Histogram:
                 labels_prefix = ""
                 if label_values:
                     labels_prefix = ",".join(
-                        f'{l}="{v}"' for l, v in zip(self._label_names, label_values)
+                        f'{name}="{val}"' for name, val in zip(self._label_names, label_values)
                     )
 
                 # Bucket counts
@@ -450,7 +450,7 @@ class MetricsHandler(BaseHTTPRequestHandler):
             self.send_response(404)
             self.end_headers()
 
-    def log_message(self, format, *args):
+    def log_message(self, format_str, *args):  # noqa: A002
         """Suppress default logging."""
         pass
 

@@ -7,10 +7,10 @@ This module provides:
 - Fallback strategies
 """
 
-from .retry import retry_with_backoff, RetryConfig
-from .circuit_breaker import ServiceCircuitBreaker, CircuitState
-from .timeout import with_timeout, TimeoutConfig
-from .fallback import FallbackStrategy, FallbackHandler
+from .circuit_breaker import CircuitState, ServiceCircuitBreaker
+from .fallback import FallbackHandler, FallbackStrategy
+from .retry import RetryConfig, retry_with_backoff
+from .timeout import TimeoutConfig, with_timeout
 
 __all__ = [
     "retry_with_backoff",

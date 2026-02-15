@@ -9,7 +9,7 @@ This module provides:
 
 from .circuit_breaker import CircuitBreaker, CircuitBreakerState
 from .kill_switch import KillSwitch, KillSwitchMode
-from .limits import PositionLimitEnforcer, LimitCheckResult
+from .limits import LimitCheckResult, PositionLimitEnforcer
 from .validation import OrderValidator, PromptSanitizer, RateLimiter
 
 __all__ = [

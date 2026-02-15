@@ -6,26 +6,25 @@ and update the Prometheus metrics.
 
 import asyncio
 import logging
-from datetime import datetime, timezone
 from typing import Any, Optional
 
 from .metrics import (
-    trades_total,
-    trade_pnl_usd,
-    win_rate,
     active_positions,
-    portfolio_value_usd,
-    unrealized_pnl_usd,
-    drawdown_pct,
-    daily_pnl_pct,
-    leverage_ratio,
-    api_latency_seconds,
-    api_errors_total,
-    api_requests_total,
-    agent_decisions_total,
     agent_confidence,
+    agent_decisions_total,
+    api_errors_total,
+    api_latency_seconds,
+    api_requests_total,
     circuit_breaker_trips,
+    daily_pnl_pct,
+    drawdown_pct,
     kill_switch_activations,
+    leverage_ratio,
+    portfolio_value_usd,
+    trade_pnl_usd,
+    trades_total,
+    unrealized_pnl_usd,
+    win_rate,
 )
 
 logger = logging.getLogger(__name__)

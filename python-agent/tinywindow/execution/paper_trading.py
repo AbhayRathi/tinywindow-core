@@ -14,7 +14,7 @@ from datetime import datetime, timezone
 from typing import Any, Optional
 
 from .paper_portfolio import PaperPortfolio
-from .slippage_model import SlippageModel, SlippageConfig
+from .slippage_model import SlippageModel
 
 logger = logging.getLogger(__name__)
 

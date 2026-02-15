@@ -8,8 +8,8 @@ Provides:
 
 import logging
 import os
-from dataclasses import dataclass, field
-from typing import Any, Dict, Optional
+from dataclasses import dataclass
+from typing import Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -92,7 +92,7 @@ class VaultClient:
             logger.warning(f"Failed to connect to Vault: {e}, using environment variables")
             self._fallback_mode = True
 
-    def read_secret(self, path: str) -> Dict[str, Any]:
+    def read_secret(self, path: str) -> dict[str, Any]:
         """Read a secret from Vault.
 
         Args:
@@ -108,7 +108,6 @@ class VaultClient:
             return self._read_from_env(path)
 
         try:
-            full_path = f"{self.config.mount_point}/data/{path}"
             result = self._hvac_client.secrets.kv.v2.read_secret_version(
                 path=path,
                 mount_point=self.config.mount_point,
@@ -119,7 +118,7 @@ class VaultClient:
             # Fall back to environment
             return self._read_from_env(path)
 
-    def write_secret(self, path: str, data: Dict[str, Any]) -> bool:
+    def write_secret(self, path: str, data: dict[str, Any]) -> bool:
         """Write a secret to Vault.
 
         Args:
@@ -168,7 +167,7 @@ class VaultClient:
             logger.error(f"Failed to delete secret {path}: {e}")
             return False
 
-    def _read_from_env(self, path: str) -> Dict[str, Any]:
+    def _read_from_env(self, path: str) -> dict[str, Any]:
         """Read secret from environment variables.
 
         Converts path to environment variable name:
@@ -245,9 +244,9 @@ class SecretManager:
             vault_client: Optional Vault client
         """
         self._vault = vault_client or VaultClient()
-        self._cache: Dict[str, Dict[str, Any]] = {}
+        self._cache: dict[str, dict[str, Any]] = {}
 
-    def get_secret(self, path: str, use_cache: bool = True) -> Dict[str, Any]:
+    def get_secret(self, path: str, use_cache: bool = True) -> dict[str, Any]:
         """Get a secret.
 
         Args:
@@ -264,7 +263,7 @@ class SecretManager:
         self._cache[path] = secret
         return secret
 
-    def set_secret(self, path: str, data: Dict[str, Any]) -> bool:
+    def set_secret(self, path: str, data: dict[str, Any]) -> bool:
         """Set a secret.
 
         Args:
