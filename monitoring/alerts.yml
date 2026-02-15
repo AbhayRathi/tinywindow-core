@@ -1,0 +1,95 @@
+groups:
+  - name: tinywindow_alerts
+    rules:
+      # Daily loss alert
+      - alert: DailyLossExceeded
+        expr: tinywindow_daily_pnl_pct < -10
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Daily loss exceeded -10%"
+          description: "Daily P&L is {{ $value }}%, exceeding the -10% threshold"
+
+      # Drawdown alert
+      - alert: DrawdownExceeded
+        expr: tinywindow_drawdown_pct < -15
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Drawdown exceeded -15%"
+          description: "Current drawdown is {{ $value }}%, exceeding the -15% threshold"
+
+      # API error rate alert
+      - alert: HighAPIErrorRate
+        expr: |
+          sum(rate(tinywindow_api_errors_total[5m])) 
+          / sum(rate(tinywindow_api_requests_total[5m])) * 100 > 10
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API error rate above 10%"
+          description: "API error rate is {{ $value }}%"
+
+      # Circuit breaker trip
+      - alert: CircuitBreakerTripped
+        expr: increase(tinywindow_circuit_breaker_trips[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Circuit breaker has tripped"
+          description: "Circuit breaker tripped due to: {{ $labels.reason }}"
+
+      # Kill switch activation
+      - alert: KillSwitchActivated
+        expr: increase(tinywindow_kill_switch_activations[5m]) > 0
+        for: 0m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kill switch has been activated"
+          description: "Kill switch activated in mode: {{ $labels.mode }}"
+
+      # Position size warning
+      - alert: LargePositionSize
+        expr: tinywindow_trade_amount_usd > 10000
+        for: 0m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Large position size detected"
+          description: "Trade amount of ${{ $value }} exceeds $10K limit"
+
+      # High leverage warning
+      - alert: HighLeverage
+        expr: tinywindow_leverage_ratio > 15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High leverage detected"
+          description: "Leverage ratio is {{ $value }}x"
+
+      # API latency warning
+      - alert: HighAPILatency
+        expr: |
+          histogram_quantile(0.95, rate(tinywindow_api_latency_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High API latency"
+          description: "95th percentile API latency is {{ $value }}s for {{ $labels.service }}"
+
+      # Portfolio value warning
+      - alert: LowPortfolioValue
+        expr: tinywindow_portfolio_value_usd < 1000
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Portfolio value critically low"
+          description: "Portfolio value is ${{ $value }}"
