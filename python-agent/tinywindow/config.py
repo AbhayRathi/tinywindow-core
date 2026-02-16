@@ -28,6 +28,12 @@ class Settings(BaseSettings):
     risk_per_trade: float = 0.02  # 2% of portfolio
     min_confidence_threshold: float = 0.5  # Minimum confidence to execute trade
 
+    # Paper Trading Configuration
+    paper_trading_mode: bool = True  # Toggle paper trading
+    paper_initial_balance: float = 10000.0  # Initial virtual balance
+    paper_trading_min_days: int = 30  # Required days before live trading
+    paper_trading_min_sharpe: float = 1.5  # Required Sharpe ratio before live
+
     # Model Configuration
     claude_model: str = "claude-3-5-sonnet-20241022"
     temperature: float = 0.7

@@ -64,9 +64,50 @@ services:
       COINBASE_API_SECRET: ${COINBASE_API_SECRET}
       BINANCE_API_KEY: ${BINANCE_API_KEY}
       BINANCE_API_SECRET: ${BINANCE_API_SECRET}
+    ports:
+      - "8000:8000"
     volumes:
       - ./python-agent:/app
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/alerts.yml:/etc/prometheus/alerts.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.enable-lifecycle'
+    depends_on:
+      - python-agent
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./monitoring/grafana/datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - grafana_data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    depends_on:
+      - prometheus
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - "9093:9093"
+    volumes:
+      - alertmanager_data:/alertmanager
 
 volumes:
   postgres_data:
   redis_data:
+  prometheus_data:
+  grafana_data:
+  alertmanager_data:
