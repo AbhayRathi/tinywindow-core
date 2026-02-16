@@ -145,12 +145,14 @@ class FallbackHandler:
             # Remove oldest item
             self._retry_queue.pop(0)
 
-        self._retry_queue.append({
-            "operation": operation_name,
-            "args": args,
-            "kwargs": kwargs,
-            "queued_at": datetime.now(timezone.utc).isoformat(),
-        })
+        self._retry_queue.append(
+            {
+                "operation": operation_name,
+                "args": args,
+                "kwargs": kwargs,
+                "queued_at": datetime.now(timezone.utc).isoformat(),
+            }
+        )
         logger.info(f"Queued {operation_name} for retry (queue size: {len(self._retry_queue)})")
 
     def get_retry_queue(self) -> list[dict[str, Any]]:
@@ -169,6 +171,7 @@ class FallbackHandler:
 
 
 # Pre-configured fallback handlers for common services
+
 
 class ClaudeAPIFallback(FallbackHandler):
     """Fallback handler for Claude API calls.
@@ -197,11 +200,7 @@ class ExchangeAPIFallback(FallbackHandler):
     """
 
     def __init__(self, backup_exchange: Optional[Callable] = None):
-        strategy = (
-            FallbackStrategy.USE_BACKUP
-            if backup_exchange
-            else FallbackStrategy.FAIL_FAST
-        )
+        strategy = FallbackStrategy.USE_BACKUP if backup_exchange else FallbackStrategy.FAIL_FAST
         super().__init__(
             FallbackConfig(
                 strategy=strategy,

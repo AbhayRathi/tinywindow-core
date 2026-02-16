@@ -209,9 +209,7 @@ class PromptSanitizer:
             strict_mode: If True, reject suspicious prompts. If False, clean them.
         """
         self.strict_mode = strict_mode
-        self._compiled_patterns = [
-            re.compile(p, re.IGNORECASE) for p in self.INJECTION_PATTERNS
-        ]
+        self._compiled_patterns = [re.compile(p, re.IGNORECASE) for p in self.INJECTION_PATTERNS]
 
     def sanitize(self, prompt: str) -> tuple[str, list[str]]:
         """Sanitize a prompt for the Claude API.
@@ -263,9 +261,7 @@ class PromptSanitizer:
             True if safe
         """
         sanitized, warnings = self.sanitize(prompt)
-        return len(sanitized) > 0 and not any(
-            "injection" in w.lower() for w in warnings
-        )
+        return len(sanitized) > 0 and not any("injection" in w.lower() for w in warnings)
 
 
 class SQLSanitizer:
@@ -287,9 +283,7 @@ class SQLSanitizer:
 
     def __init__(self):
         """Initialize SQL sanitizer."""
-        self._compiled_patterns = [
-            re.compile(p, re.IGNORECASE) for p in self.DANGEROUS_PATTERNS
-        ]
+        self._compiled_patterns = [re.compile(p, re.IGNORECASE) for p in self.DANGEROUS_PATTERNS]
 
     def is_safe_value(self, value: Any) -> bool:
         """Check if a value is safe for SQL use.

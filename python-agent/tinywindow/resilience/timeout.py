@@ -62,9 +62,7 @@ def with_timeout(
                     timeout=config.timeout_seconds,
                 )
             except asyncio.TimeoutError:
-                logger.warning(
-                    f"Timeout after {config.timeout_seconds}s in {func.__name__}"
-                )
+                logger.warning(f"Timeout after {config.timeout_seconds}s in {func.__name__}")
                 if config.on_timeout:
                     try:
                         config.on_timeout(func.__name__)
@@ -82,9 +80,7 @@ def with_timeout(
                 try:
                     return future.result(timeout=config.timeout_seconds)
                 except FuturesTimeoutError:
-                    logger.warning(
-                        f"Timeout after {config.timeout_seconds}s in {func.__name__}"
-                    )
+                    logger.warning(f"Timeout after {config.timeout_seconds}s in {func.__name__}")
                     if config.on_timeout:
                         try:
                             config.on_timeout(func.__name__)

@@ -301,9 +301,7 @@ class PaperTradingExecutor:
         """
         total_trades = len(self.execution_history)
         filled_trades = sum(1 for e in self.execution_history if e.status == "PAPER_FILLED")
-        rejected_trades = sum(
-            1 for e in self.execution_history if e.status == "PAPER_REJECTED"
-        )
+        rejected_trades = sum(1 for e in self.execution_history if e.status == "PAPER_REJECTED")
         total_pnl = sum(e.pnl for e in self.execution_history)
         total_slippage = sum(e.slippage for e in self.execution_history if e.slippage > 0)
 
@@ -313,9 +311,7 @@ class PaperTradingExecutor:
             "rejected_trades": rejected_trades,
             "fill_rate": filled_trades / total_trades if total_trades > 0 else 0.0,
             "total_pnl": total_pnl,
-            "avg_slippage": (
-                total_slippage / filled_trades if filled_trades > 0 else 0.0
-            ),
+            "avg_slippage": (total_slippage / filled_trades if filled_trades > 0 else 0.0),
             "portfolio_summary": self.portfolio.get_summary(),
         }
 

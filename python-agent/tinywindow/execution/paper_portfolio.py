@@ -194,9 +194,7 @@ class PaperPortfolio:
 
         # Check if we have enough cash for long positions
         if side == "long" and cost > self.cash_balance:
-            logger.warning(
-                f"Insufficient balance: need ${cost:.2f}, have ${self.cash_balance:.2f}"
-            )
+            logger.warning(f"Insufficient balance: need ${cost:.2f}, have ${self.cash_balance:.2f}")
             return False
 
         # Deduct cash for long positions
@@ -209,9 +207,7 @@ class PaperPortfolio:
             if existing.side == side:
                 # Add to existing position (average price)
                 total_amount = existing.amount + amount
-                avg_price = (
-                    (existing.amount * existing.entry_price + amount * price) / total_amount
-                )
+                avg_price = (existing.amount * existing.entry_price + amount * price) / total_amount
                 existing.amount = total_amount
                 existing.entry_price = avg_price
             else:
@@ -282,9 +278,7 @@ class PaperPortfolio:
         # Record trade
         self._record_trade(symbol, position.side, amount, price, "CLOSE", pnl)
 
-        logger.info(
-            f"Closed position: {amount} {symbol} @ ${price:.2f}, P&L: ${pnl:.2f}"
-        )
+        logger.info(f"Closed position: {amount} {symbol} @ ${price:.2f}, P&L: ${pnl:.2f}")
         return True, pnl
 
     def _handle_opposite_position(

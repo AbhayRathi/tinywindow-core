@@ -98,9 +98,8 @@ class KeyRotationManager:
         self._states[service] = KeyRotationState(
             service=service,
             status=RotationStatus.PENDING,
-            next_rotation=datetime.now(timezone.utc) + timedelta(
-                days=self.config.rotation_interval_days
-            ),
+            next_rotation=datetime.now(timezone.utc)
+            + timedelta(days=self.config.rotation_interval_days),
         )
         logger.info(f"Registered service for rotation: {service}")
 

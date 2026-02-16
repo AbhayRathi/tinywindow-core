@@ -184,9 +184,7 @@ def _get_key_from_env() -> bytes:
     """
     key_b64 = os.getenv("TINYWINDOW_ENCRYPTION_KEY")
     if not key_b64:
-        raise EncryptionError(
-            "TINYWINDOW_ENCRYPTION_KEY environment variable not set"
-        )
+        raise EncryptionError("TINYWINDOW_ENCRYPTION_KEY environment variable not set")
 
     try:
         return base64.b64decode(key_b64)

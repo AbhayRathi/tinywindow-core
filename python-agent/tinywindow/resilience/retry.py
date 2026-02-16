@@ -34,9 +34,7 @@ class RetryConfig:
     max_delay: float = 60.0  # Maximum delay in seconds
     exponential_base: float = 2.0  # Exponential backoff base
     jitter: float = 0.1  # Random jitter factor (0-1)
-    retryable_exceptions: tuple[type[Exception], ...] = field(
-        default_factory=lambda: (Exception,)
-    )
+    retryable_exceptions: tuple[type[Exception], ...] = field(default_factory=lambda: (Exception,))
     non_retryable_exceptions: tuple[type[Exception], ...] = field(
         default_factory=lambda: NON_RETRYABLE_EXCEPTIONS
     )
@@ -56,7 +54,7 @@ def calculate_backoff(
         Delay in seconds
     """
     # Exponential backoff: base_delay * (exponential_base ^ attempt)
-    delay = config.base_delay * (config.exponential_base ** attempt)
+    delay = config.base_delay * (config.exponential_base**attempt)
 
     # Add jitter
     jitter_range = delay * config.jitter
@@ -130,9 +128,7 @@ def retry_with_backoff(
                     last_exception = e
 
                     if not should_retry(e, config):
-                        logger.warning(
-                            f"Non-retryable error in {func.__name__}: {e}"
-                        )
+                        logger.warning(f"Non-retryable error in {func.__name__}: {e}")
                         raise
 
                     if attempt == config.max_attempts - 1:
@@ -170,9 +166,7 @@ def retry_with_backoff(
                     last_exception = e
 
                     if not should_retry(e, config):
-                        logger.warning(
-                            f"Non-retryable error in {func.__name__}: {e}"
-                        )
+                        logger.warning(f"Non-retryable error in {func.__name__}: {e}")
                         raise
 
                     if attempt == config.max_attempts - 1:

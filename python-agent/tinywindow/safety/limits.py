@@ -373,12 +373,18 @@ class PositionLimitEnforcer:
             available_leverage = float("inf")
 
         # Return minimum of all limits
-        available = min(available_position, available_exposure, available_sector, available_leverage)
+        available = min(
+            available_position, available_exposure, available_sector, available_leverage
+        )
 
         return {
             "available_usd": max(0, available),
             "position_limit": available_position,
             "exposure_remaining": max(0, available_exposure),
-            "sector_remaining": max(0, available_sector) if available_sector != float("inf") else None,
-            "leverage_remaining": max(0, available_leverage) if available_leverage != float("inf") else None,
+            "sector_remaining": (
+                max(0, available_sector) if available_sector != float("inf") else None
+            ),
+            "leverage_remaining": (
+                max(0, available_leverage) if available_leverage != float("inf") else None
+            ),
         }
